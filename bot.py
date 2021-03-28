@@ -10,7 +10,7 @@ from requests import get, post
 
 
 def buy_slave():
-    """Покупает рабов и оковы, если включено в config.json. vk.com/onlyrab """
+    """Покупает рабов и оковы, если включено в config.json.  vk.com/onlyrab"""
     while True:
         try:
             if config["invisible_slaves"] == 1:
@@ -26,6 +26,9 @@ def buy_slave():
                     "Content-Type": "application/json",
                     "authorization": auth,
                     "User-agent": "Mozilla/5.0",
+                    "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                    "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                    + auth,
                 },
                 json={"slave_id": rand_slave},
             )
@@ -37,7 +40,7 @@ def buy_slave():
                 f"""\n===[{strftime("%d.%m.%Y %H:%M:%S")}]===
 Баланс: {profile['balance']}
 Рабов: {profile['slaves_count']}
-vk.com/onlyrab - Доход в минуту: {profile['slaves_profit_per_min'] }
+ vk.com/onlyrab  - Доход в минуту: {profile['slaves_profit_per_min']}
 ===========================\n"""
             )
 
@@ -49,6 +52,9 @@ vk.com/onlyrab - Доход в минуту: {profile['slaves_profit_per_min'] }
                         "Content-Type": "application/json",
                         "authorization": auth,
                         "User-agent": "Mozilla/5.0",
+                        "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                        "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                        + auth,
                     },
                     json={
                         "slave_id": rand_slave,
@@ -63,22 +69,25 @@ vk.com/onlyrab - Доход в минуту: {profile['slaves_profit_per_min'] }
 
 
 def buy_fetter():
-    """Покупает оковы тем, у кого их нет. vk.com/onlyrab"""
+    """Покупает оковы тем, у кого их нет.  vk.com/onlyrab """
     while True:
         try:
-            # Получение полной информации об аккаунте vk.com/onlyrab
+            # Получение полной информации об аккаунте
             start = get(
                 "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/start",
                 headers={
                     "Content-Type": "application/json",
                     "authorization": auth,
                     "User-agent": "Mozilla/5.0",
+                    "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                    "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                    + auth,
                 },
             ).json()
 
-            # Перебор списка рабов vk.com/onlyrab
+            # Перебор списка рабов
             for slave in start["slaves"]:
-                # Проверка на наличие оков vk.com/onlyrab
+                # Проверка на наличие оков
                 if int(slave["fetter_to"]) == 0 and int(slave["id"]) >= 1:
                     # Покупка оков
                     post(
@@ -87,6 +96,9 @@ def buy_fetter():
                             "Content-Type": "application/json",
                             "authorization": auth,
                             "User-agent": "Mozilla/5.0",
+                            "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                            "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                            + auth,
                         },
                         json={
                             "slave_id": int(slave["id"]),
@@ -107,6 +119,9 @@ def buy_fetter():
                             "Content-Type": "application/json",
                             "authorization": auth,
                             "User-agent": "Mozilla/5.0",
+                            "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                            "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                            + auth,
                         },
                         json={
                             "slave_id": int(slave["id"]),
@@ -121,7 +136,7 @@ def buy_fetter():
 
 
 def job_slave():
-    """Даёт безработным работу. vk.com/onlyrab"""
+    """Даёт безработным работу.  vk.com/onlyrab"""
     while True:
         try:
             start = get(
@@ -130,6 +145,9 @@ def job_slave():
                     "Content-Type": "application/json",
                     "authorization": auth,
                     "User-agent": "Mozilla/5.0",
+                    "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                    "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                    + auth,
                 },
             ).json()
 
@@ -144,6 +162,9 @@ def job_slave():
                             "Content-Type": "application/json",
                             "authorization": auth,
                             "User-agent": "Mozilla/5.0",
+                            "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
+                            "referer": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com/index.html?"
+                            + auth,
                         },
                         json={
                             "slave_id": int(slave["id"]),
@@ -159,14 +180,14 @@ def job_slave():
 
 
 if __name__ == "__main__":
-    print("Версия 0.9 vk.com/onlyrab ")
+    print("Версия 0.9  vk.com/onlyrab")
 
     # Конфиг
     with open("config.json") as f:
         try:
             config = load(f)
         except Exception as e:
-            print("Неверный конфиг vk.com/onlyrab")
+            print("Неверный конфиг  vk.com/onlyrab")
             sys.exit()
     auth = str(config["authorization"])
     delay = int(config["delay"])
