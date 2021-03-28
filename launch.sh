@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 python -m pip install requests
-cd ~/vk-slaves-bot
+cd ~/onlyrab
 clear
 python bot.py
