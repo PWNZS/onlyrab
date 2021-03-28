@@ -18,10 +18,10 @@ invisible_fetters - покупать ли невидимым раба цепи. 
 Устанавливаем Termux, желательно с F-Droid, т.к. в Google Play разработчик его больше не обновляет.
 Запускаем Termux.
 
-Пишем по порядку:
-cd
-pkg install -y git
-git clone https://github.com/hudoils/onlyrab
-sh onlyrab/termux.sh
-Редактируем файл config.json командой nano onlyrab/config.json по инструкции для Windows или перекидываем с компьютера имеющийся. Как сделать это, можете посмотреть на YouTube или почитать в интернете.
-Запуск: sh onlyrab/launch.sh
+*Пишем по порядку:
+*cd
+*pkg install -y git
+*git clone https://github.com/hudoils/onlyrab
+*sh onlyrab/termux.sh
+*Редактируем файл config.json командой nano onlyrab/config.json по инструкции для Windows или перекидываем с компьютера имеющийся. Как сделать это, можете посмотреть на YouTube или почитать в интернете.
+*Запуск: sh onlyrab/launch.sh
