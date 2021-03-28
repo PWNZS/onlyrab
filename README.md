@@ -24,4 +24,4 @@ invisible_fetters - покупать ли невидимым раба цепи. 
 3. git clone https://github.com/hudoils/onlyrab
 4. sh onlyrab/termux.sh
 5. Редактируем файл config.json командой nano onlyrab/config.json по инструкции для Windows или перекидываем с компьютера имеющийся. Как сделать это, можете посмотреть на YouTube или почитать в интернете.
-6.Запуск: sh onlyrab/launch.sh
+6. Запуск: sh onlyrab/launch.sh
