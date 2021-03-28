@@ -11,7 +11,7 @@ from requests import get, post
 
 def buy_slave(id):
     """Покупает раба. vk.com/onlyrab"""
-    return post(
+    post(
         "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/buySlave",
         headers={
             "Content-Type": "application/json",
@@ -20,7 +20,7 @@ def buy_slave(id):
             "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
         },
         json={"slave_id": id},
-    ).json()
+    )
 
 
 def buy_fetter(id):
@@ -33,13 +33,12 @@ def buy_fetter(id):
             "User-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Safari/537.36",
             "origin": "https://prod-app7794757-c1ffb3285f12.pages-ac.vk-apps.com",
         },
-        json={
-            "slave_id": id,
-        },
+        json={"slave_id": id},
     )
 
 
 def get_start():
+    """Получает полную информацию о своём профиле. vk.com/onlyrab"""
     return get(
         "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/start",
         headers={
@@ -52,6 +51,7 @@ def get_start():
 
 
 def sell_slave(id):
+    """Продаёт раба. vk.com/onlyrab"""
     post(
         "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/saleSlave",
         headers={
@@ -65,6 +65,7 @@ def sell_slave(id):
 
 
 def job_slave(id):
+    """Даёт работу. vk.com/onlyrab"""
     post(
         "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/jobSlave",
         headers={
@@ -81,6 +82,7 @@ def job_slave(id):
 
 
 def get_user(id):
+    """Получает информацие о пользователе. vk.com/onlyrab"""
     return get(
         "https://pixel.w84.vkforms.ru/HappySanta/slaves/1.0.0/user",
         headers={
@@ -97,11 +99,11 @@ def buy_slaves():
     """Покупает и улучшает рабов, надевает оковы, если включено в config.json. vk.com/onlyrab"""
     while True:
         try:
-            # Случайный раб в промежутке vk.com/onlyrab
+            # Случайный раб в промежутке
             rand_slave = randint(1, 646735737)
             rand_slave_info = get_user(rand_slave)
 
-            # Проверка раба на соотвествие настройкам цены vk.com/onlyrab
+            # Проверка раба на соотвествие настройкам цены
             while not (
                 int(rand_slave_info["price"]) <= max_price
                 and int(rand_slave_info["price"]) >= min_price
@@ -109,24 +111,24 @@ def buy_slaves():
                 rand_slave = randint(1, 646735737)
                 rand_slave_info = get_user(rand_slave)
 
-            # Покупка раба и получение информации о своём профиле vk.com/onlyrab
-            profile = buy_slave(rand_slave)
+            # Покупка раба
+            buy_slave(rand_slave)
+
+            # Получение информации о себе
+            me = get_user(my_id)
 
             print(
-                f"""\n===[{strftime("%d.%m.%Y %H:%M:%S")}]===
+                f"""\n==[{strftime("%d.%m.%Y %H:%M:%S")}]==
 Купил vk.com/id{rand_slave} за {rand_slave_info["price"]}
-Баланс: {"{:,}".format(profile['balance'])}
-Рабов: {"{:,}".format(profile['slaves_count'])}
-Доход в минуту: {"{:,}".format(profile['slaves_profit_per_min'])}
-Место в рейтинге: {"{:,}".format(profile['rating_position'])}
-vk.com/onlyrab ===========================\n""",
+Баланс: {"{:,}".format(me['balance'])}
+Рабов: {"{:,}".format(me['slaves_count'])}
+vk.com/onlyrab - Доход в минуту: {"{:,}".format(me['slaves_profit_per_min'])}
+Место в рейтинге: {"{:,}".format(me['rating_position'])}\n""",
             )
             if upgrade_slaves == 1:
-                # Получение полной информации об аккаунте
-                me = get_user(my_id)
-
                 # Перебор списка рабов
                 if "balance" in me.keys():
+                    # Проверка на то, хватит ли баланса для прокачки
                     if int(me["balance"]) >= 39214:
                         while int(get_user(rand_slave)["price"]) <= 26151:
                             sell_slave(rand_slave)
@@ -135,10 +137,10 @@ vk.com/onlyrab ===========================\n""",
                             print("Улучшил раба vk.com/onlyrab")
                             sleep(delay + random())
 
-                # Покупает оковы только что купленному рабу
-                if buy_fetters == 1:
-                    buy_fetter(rand_slave)
-                    print(f"Купил оковы vk.com/id{rand_slave}")
+            # Покупает оковы только что купленному рабу
+            if buy_fetters == 1:
+                buy_fetter(rand_slave)
+                print(f"Купил оковы vk.com/id{rand_slave}")
 
             sleep(delay + random())
         except Exception as e:
@@ -200,7 +202,10 @@ if __name__ == "__main__":
     conf_buy_fetters = int(config["buy_fetters"])
     conf_buy_slaves = int(config["buy_slaves"])
     delay = int(config["delay"])
-    job = list(config["job"])
+    try:
+        job = list(config["job"])
+    except:
+        job = str(config["job"])
     max_price = int(config["max_price"])
     min_price = int(config["min_price"])
     my_id = int(config["my_id"])
