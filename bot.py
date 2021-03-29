@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
-from json import dump, load
+from json import load
 from random import choice, randint, random
 from threading import Thread
 from time import sleep, strftime
@@ -147,7 +147,7 @@ def upgrade_slaves():
     while True:
         try:
             # Перебор списка рабов
-            for slave in get_start["slaves"]:
+            for slave in get_start()["slaves"]:
                 balance = get_user(my_id)["balance"]
                 if int(balance) >= 39214:
                     slave_price = get_user(slave["id"])["price"]
