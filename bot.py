@@ -201,10 +201,14 @@ vk.com/onlyrab - Доход в минуту: {"{:,}".format(me['slaves_profit_pe
 
                                     # Покупает оковы только что купленному рабу
                                     if buy_fetters == 1:
-                                        buy_fetter(slave_id)
-                                        print(
-                                            f"Купил оковы vk.com/id{slave_id}"
+                                        fetter_price = int(
+                                            get_user(slave_id)["fetter_price"]
                                         )
+                                        if fetter_price <= max_fetter_price:
+                                            buy_fetter(slave_id)
+                                            print(
+                                                f"Купил оковы vk.com/id{slave_id} за {fetter_price}"
+                                            )
                                     sleep(delay + random())
         except Exception as e:
             print(e.args)
@@ -221,8 +225,8 @@ def buy_slaves():
 
             # Проверка раба на соотвествие настройкам цены
             while (
-                int(slave_info["price"]) >= max_price
-                or int(slave_info["price"]) <= min_price
+                int(slave_info["price"]) > max_price
+                or int(slave_info["price"]) < min_price
             ):
                 slave_id = randint(1, 646959225)
                 slave_info = get_user(slave_id)
@@ -248,10 +252,62 @@ vk.com/onlyrab - Доход в минуту: {"{:,}".format(me['slaves_profit_pe
 
             # Покупает оковы только что купленному рабу
             if buy_fetters == 1:
-                buy_fetter(slave_id)
-                print(f"Купил оковы vk.com/id{slave_id}")
+                fetter_price = int(get_user(slave_id)["fetter_price"])
+                if fetter_price <= max_fetter_price:
+                    buy_fetter(slave_id)
+                    print(f"Купил оковы vk.com/id{slave_id} за {fetter_price}")
 
             sleep(delay + random())
+        except Exception as e:
+            print(e.args)
+            sleep(delay + random())
+
+
+def buy_from_ids():
+    """То же самое, что и buy_slaves, только перекупает рабов из списка в config.json."""
+    while True:
+        try:
+            for id in buy_from_ids_list:
+                slaves = get_slave_list(int(id))
+                if "slaves" in slaves.keys():
+                    for slave in slaves["slaves"]:
+                        if int(slave["fetter_to"]) == 0:
+                            slave_id = slave["id"]
+                            slave_info = get_user(slave_id)
+                            if (
+                                slave_info["price"] <= max_price
+                                and slave_info["price"] >= min_price
+                            ):
+                                # Покупка раба
+                                buy_slave(slave_id)
+
+                                # Получение информации о себе
+                                me = get_user(my_id)
+
+                                print(
+                                    f"""\n==[{strftime("%d.%m.%Y %H:%M:%S")}]==
+Купил id{slave_info["id"]} за {slave_info["price"]} у id{id}
+Баланс: {"{:,}".format(me['balance'])}
+Рабов: {"{:,}".format(me['slaves_count'])}
+vk.com/onlyrab - Доход в минуту: {"{:,}".format(me['slaves_profit_per_min'])}
+Место в рейтинге: {"{:,}".format(me['rating_position'])}\n""",
+                                )
+
+                                # Прокачивает раба
+                                if conf_upgrade_slaves == 1:
+                                    upgrade_slave(me, slave_id)
+
+                                # Покупает оковы только что купленному рабу
+                                if buy_fetters == 1:
+                                    fetter_price = int(
+                                        get_user(slave_id)["fetter_price"]
+                                    )
+                                    if fetter_price <= max_fetter_price:
+                                        buy_fetter(slave_id)
+                                        print(
+                                            f"Купил оковы vk.com/id{slave_id} за {fetter_price}"
+                                        )
+                                sleep(delay + random())
         except Exception as e:
             print(e.args)
             sleep(delay + random())
@@ -272,9 +328,13 @@ def buy_fetters():
             for slave in slaves:
                 # Проверка на наличие оков
                 if int(slave["fetter_to"]) == 0:
-                    buy_fetter(slave["id"])
-                    print(f"Купил оковы id{slave['id']}")
-                    sleep(delay + random())
+                    fetter_price = int(get_user(slave["id"])["fetter_price"])
+                    if fetter_price <= max_fetter_price:
+                        buy_fetter(slave["id"])
+                        print(
+                            f"Купил оковы vk.com/id{slave['id']} за {fetter_price}"
+                        )
+                        sleep(delay + random())
         except Exception as e:
             print(e.args)
             sleep(delay + random())
@@ -285,7 +345,7 @@ def job_slaves():
     while True:
         try:
             slaves = get_start()["slaves"]
-            if conf_buy_slaves == 0 and conf_buy_fetters == 1:
+            if buy_slaves_mode == 0 and conf_buy_fetters == 1:
                 del slaves[0]
             # Перебор списка рабов
             for slave in slaves:
@@ -312,10 +372,10 @@ if __name__ == "__main__":
             print("Неверный конфиг")
             sys.exit()
     auth = str(config["authorization"])
+    buy_slaves_mode = int(config["buy_slaves_mode"])
     conf_buy_fetters = int(config["buy_fetters"])
-    conf_buy_slaves = int(config["buy_slaves"])
+    max_fetter_price = int(config["max_fetter_price"])
     delay = int(config["delay"])
-    top_hate = int(config["top_hate"])
     try:
         job = list(config["job"])
     except:
@@ -324,14 +384,17 @@ if __name__ == "__main__":
     max_price = int(config["max_price"])
     my_id = int(config["my_id"])
     conf_upgrade_slaves = int(config["upgrade_slaves"])
-
-    if conf_buy_slaves == 1 and top_hate == 0:
+    buy_from_ids_list = list(config["buy_from_ids"])
+    if buy_slaves_mode == 1:
         print("Включена покупка случайных рабов.")
         Thread(target=buy_slaves).start()
-    elif conf_buy_slaves == 1 and top_hate == 1:
+    elif buy_slaves_mode == 2:
         print("Включена перекупка рабов у топеров.")
         Thread(target=buy_top_users_slaves).start()
-    if conf_upgrade_slaves == 1 and conf_buy_slaves == 0:
+    elif buy_slaves_mode == 3:
+        print("Включена перекупка у IDшников из config.json.")
+        Thread(target=buy_from_ids).start()
+    if conf_upgrade_slaves == 1 and buy_slaves_mode == 0:
         Thread(target=upgrade_slaves).start()
     if conf_buy_fetters == 1:
         Thread(target=buy_fetters).start()
