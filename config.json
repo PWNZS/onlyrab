@@ -1,11 +1,12 @@
 {
   "authorization": "",
-  "my_id": 607137534,
+  "my_id": 617157524,
   "buy_slaves": 1,
-  "buy_fetters": 1,
-  "upgrade_slaves": 1,
+  "buy_fetters": 0,
+  "upgrade_slaves": 0,
+  "min_price": 40,
   "max_price": 26151,
   "top_hate": 0,
-  "job": ["vk.com/onlyrab", "vk.com/onlyrab", "1"],
-  "delay": 9
+  "job": ["1", "onlyrab", "vk.com/onlyrab"],
+  "delay": 7
 }
